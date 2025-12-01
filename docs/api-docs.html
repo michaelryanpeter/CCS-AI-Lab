@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkyRescue API Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Monaco', monospace;
+            background: #1a1a1a;
+            color: #e0e0e0;
+        }
+
+        :root {
+            --primary: #058DC7;
+            --accent: #50B432;
+            --white: #FFFFFF;
+            --dark: #158158;
+            --bg-dark: #1a1a1a;
+            --bg-darker: #0d0d0d;
+            --border: #2a2a2a;
+            --light-blue: #24CBE5;
+            --light-green: #64E572;
+            --orange: #ED561B;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, #0088CC 100%);
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 174, 239, 0.3);
+        }
+
+        .header h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+        }
+
+        /* Navigation */
+        .nav {
+            background: var(--bg-darker);
+            border-bottom: 1px solid var(--border);
+            padding: 15px 30px;
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+        }
+
+        .nav-link {
+            color: var(--primary);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .nav-link:hover {
+            background: rgba(0, 174, 239, 0.1);
+            color: var(--accent);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Section */
+        .section {
+            margin-bottom: 60px;
+        }
+
+        .section h2 {
+            font-size: 32px;
+            color: var(--primary);
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 10px;
+        }
+
+        .section h3 {
+            font-size: 24px;
+            color: var(--accent);
+            margin: 30px 0 15px;
+        }
+
+        .section p {
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        /* Endpoint Card */
+        .endpoint {
+            background: var(--bg-darker);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--primary);
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .endpoint-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .method {
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .method-post {
+            background: #50B432;
+            color: #fff;
+        }
+
+        .method-get {
+            background: #058DC7;
+            color: #fff;
+        }
+
+        .endpoint-path {
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 16px;
+            color: var(--accent);
+        }
+
+        .endpoint-description {
+            margin: 15px 0;
+            line-height: 1.6;
+        }
+
+        /* Code Block */
+        .code-block {
+            background: #000;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 20px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        .code-block pre {
+            margin: 0;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .code-lang {
+            color: var(--primary);
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        .copy-btn {
+            background: var(--primary);
+            color: #000;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+
+        .copy-btn:hover {
+            background: var(--accent);
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: var(--bg-darker);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid var(--border);
+        }
+
+        th {
+            background: rgba(0, 174, 239, 0.1);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Feature Box */
+        .feature-box {
+            background: rgba(57, 255, 20, 0.05);
+            border: 1px solid var(--accent);
+            border-radius: 6px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .feature-box h4 {
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        .badge-auth {
+            background: rgba(255, 165, 0, 0.2);
+            color: #FFA500;
+            border: 1px solid #FFA500;
+        }
+
+        .badge-ws {
+            background: rgba(57, 255, 20, 0.2);
+            color: var(--accent);
+            border: 1px solid var(--accent);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--bg-darker);
+            border-top: 1px solid var(--border);
+            padding: 30px;
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        .footer-links {
+            margin: 15px 0;
+        }
+
+        .footer-link {
+            color: var(--primary);
+            text-decoration: none;
+            margin: 0 15px;
+        }
+
+        .footer-link:hover {
+            color: var(--accent);
+        }
+
+        /* Syntax Highlighting */
+        .json-key { color: #00AEEF; }
+        .json-string { color: #39FF14; }
+        .json-number { color: #FFA500; }
+        .json-boolean { color: #FF6B9D; }
+        .comment { color: #666; opacity: 0.8; }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <h1><img src="logo.png" alt="SkyRescue" style="width: 50px; height: 50px; vertical-align: middle; border-radius: 10px; margin-right: 15px;">SkyRescue API Documentation</h1>
+        <p>RESTful API and WebSocket endpoints for emergency response drone system</p>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <a href="#overview" class="nav-link">Overview</a>
+        <a href="#authentication" class="nav-link">Authentication</a>
+        <a href="#emergency" class="nav-link">Emergency</a>
+        <a href="#mission" class="nav-link">Mission</a>
+        <a href="#voice" class="nav-link">Voice AI</a>
+        <a href="#fleet" class="nav-link">Fleet</a>
+        <a href="#mqtt" class="nav-link">MQTT</a>
+        <a href="index.html" class="nav-link">← Back to Home</a>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Overview -->
+        <section id="overview" class="section">
+            <h2>Overview</h2>
+            <p>
+                The SkyRescue API provides programmatic access to the emergency response drone system.
+                It enables 911 dispatchers to assess emergencies, launch drones, and monitor missions in real-time.
+            </p>
+
+            <div class="feature-box">
+                <h4>Base URL</h4>
+                <code>https://api.skyrescue.ai/v1</code>
+            </div>
+
+            <h3>Key Features</h3>
+            <table>
+                <tr>
+                    <th>Feature</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td><strong>AI Decision Support</strong></td>
+                    <td>95% confidence recommendations for drone launches</td>
+                </tr>
+                <tr>
+                    <td><strong>Real-time Updates</strong></td>
+                    <td>WebSocket streaming for telemetry and voice transcripts</td>
+                </tr>
+                <tr>
+                    <td><strong>MQTT Integration</strong></td>
+                    <td>Direct drone communication via AWS IoT Core</td>
+                </tr>
+                <tr>
+                    <td><strong>Voice AI Control</strong></td>
+                    <td>Manual override and transcript access</td>
+                </tr>
+                <tr>
+                    <td><strong>Fleet Management</strong></td>
+                    <td>Monitor and manage entire drone fleet</td>
+                </tr>
+            </table>
+        </section>
+
+        <!-- Authentication -->
+        <section id="authentication" class="section">
+            <h2>Authentication</h2>
+            <p>All API requests require authentication using JWT Bearer tokens.</p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">HTTP Header</span>
+                </div>
+                <pre>Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</pre>
+            </div>
+
+            <h3>Obtaining a Token</h3>
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method method-post">POST</span>
+                    <span class="endpoint-path">/auth/login</span>
+                </div>
+                <div class="endpoint-description">
+                    Authenticate with dispatcher credentials to receive a JWT token.
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">Request Body (JSON)</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre>{
+  <span class="json-key">"email"</span>: <span class="json-string">"dispatcher@example.com"</span>,
+  <span class="json-key">"password"</span>: <span class="json-string">"secure_password"</span>
+}</pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">Response (JSON)</span>
+                    </div>
+                    <pre>{
+  <span class="json-key">"token"</span>: <span class="json-string">"eyJhbGciOiJIUzI1NiIs..."</span>,
+  <span class="json-key">"expires_in"</span>: <span class="json-number">86400</span>,
+  <span class="json-key">"dispatcher_id"</span>: <span class="json-string">"D-Smith-001"</span>
+}</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Emergency Endpoints -->
+        <section id="emergency" class="section">
+            <h2>Emergency Endpoints</h2>
+
+            <!-- Assess Emergency -->
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method method-post">POST</span>
+                    <span class="endpoint-path">/emergency/assess</span>
+                    <span class="badge badge-auth">Requires Auth</span>
+                </div>
+                <div class="endpoint-description">
+                    AI analyzes emergency details and recommends whether to launch a drone.
+                    Returns confidence score, nearest drone, ETA comparison, and risk assessment.
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">Request Example (cURL)</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre>curl -X POST https://api.skyrescue.ai/v1/emergency/assess \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+  "emergency_type": "cardiac_arrest",
+  "location": {
+    "latitude": 42.3601,
+    "longitude": -71.0589,
+    "address": "123 Main St, Boston MA"
+  },
+  "caller_info": {
+    "on_scene": true,
+    "can_assist": true
+  }
+}'</pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">Response (200 OK)</span>
+                    </div>
+                    <pre>{
+  <span class="json-key">"recommendation"</span>: <span class="json-string">"LAUNCH"</span>,
+  <span class="json-key">"confidence"</span>: <span class="json-number">0.95</span>,
+  <span class="json-key">"reasoning"</span>: {
+    <span class="json-key">"nearest_drone"</span>: <span class="json-string">"Alpha-3"</span>,
+    <span class="json-key">"drone_eta"</span>: <span class="json-string">"2:15"</span>,
+    <span class="json-key">"ambulance_eta"</span>: <span class="json-string">"8:00"</span>,
+    <span class="json-key">"time_advantage"</span>: <span class="json-string">"5:45"</span>,
+    <span class="json-key">"weather_safe"</span>: <span class="json-boolean">true</span>,
+    <span class="json-key">"risk_level"</span>: <span class="json-string">"LOW"</span>
+  }
+}</pre>
+                </div>
+            </div>
+
+            <!-- Launch Drone -->
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method method-post">POST</span>
+                    <span class="endpoint-path">/emergency/launch</span>
+                    <span class="badge badge-auth">Requires Auth</span>
+                </div>
+                <div class="endpoint-description">
+                    Dispatcher command to launch selected drone to emergency location.
+                    Creates mission record and sends MQTT command to drone.
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">Request Body (JSON)</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre>{
+  <span class="json-key">"emergency_id"</span>: <span class="json-string">"CA-20251201-001"</span>,
+  <span class="json-key">"drone_id"</span>: <span class="json-string">"Alpha-3"</span>,
+  <span class="json-key">"destination"</span>: {
+    <span class="json-key">"latitude"</span>: <span class="json-number">42.3601</span>,
+    <span class="json-key">"longitude"</span>: <span class="json-number">-71.0589</span>
+  },
+  <span class="json-key">"dispatcher_id"</span>: <span class="json-string">"D-Smith-001"</span>,
+  <span class="json-key">"priority"</span>: <span class="json-string">"EMERGENCY"</span>
+}</pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">Response (201 Created)</span>
+                    </div>
+                    <pre>{
+  <span class="json-key">"mission_id"</span>: <span class="json-string">"M-20251201-001"</span>,
+  <span class="json-key">"drone_id"</span>: <span class="json-string">"Alpha-3"</span>,
+  <span class="json-key">"status"</span>: <span class="json-string">"LAUNCHED"</span>,
+  <span class="json-key">"eta"</span>: <span class="json-string">"2:15"</span>,
+  <span class="json-key">"launch_time"</span>: <span class="json-string">"2025-12-01T14:23:15Z"</span>,
+  <span class="json-key">"websocket_url"</span>: <span class="json-string">"wss://api.skyrescue.ai/v1/mission/M-20251201-001/updates"</span>
+}</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mission Endpoints -->
+        <section id="mission" class="section">
+            <h2>Mission Endpoints</h2>
+
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method method-get">GET</span>
+                    <span class="endpoint-path">/mission/{mission_id}</span>
+                    <span class="badge badge-auth">Requires Auth</span>
+                </div>
+                <div class="endpoint-description">
+                    Retrieve current status, telemetry, and history for a mission.
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">Response Example</span>
+                    </div>
+                    <pre>{
+  <span class="json-key">"mission_id"</span>: <span class="json-string">"M-20251201-001"</span>,
+  <span class="json-key">"status"</span>: <span class="json-string">"IN_FLIGHT"</span>,
+  <span class="json-key">"telemetry"</span>: {
+    <span class="json-key">"latitude"</span>: <span class="json-number">42.3589</span>,
+    <span class="json-key">"longitude"</span>: <span class="json-number">-71.0602</span>,
+    <span class="json-key">"altitude"</span>: <span class="json-number">120</span>,
+    <span class="json-key">"speed"</span>: <span class="json-number">15.5</span>,
+    <span class="json-key">"battery"</span>: <span class="json-number">84</span>
+  },
+  <span class="json-key">"voice_ai"</span>: {
+    <span class="json-key">"active"</span>: <span class="json-boolean">false</span>,
+    <span class="json-key">"language_detected"</span>: <span class="json-string">"en"</span>
+  }
+}</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Voice AI Endpoints -->
+        <section id="voice" class="section">
+            <h2>Voice AI Endpoints</h2>
+
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method method-get">GET</span>
+                    <span class="endpoint-path">/voice/transcript</span>
+                    <span class="badge badge-auth">Requires Auth</span>
+                    <span class="badge badge-ws">WebSocket</span>
+                </div>
+                <div class="endpoint-description">
+                    WebSocket endpoint for real-time voice AI transcript streaming.
+                    Returns drone-bystander conversation with speaker identification and timestamps.
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">JavaScript WebSocket Example</span>
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <pre>const ws = new WebSocket(
+  'wss://api.skyrescue.ai/v1/voice/transcript?mission_id=M-001'
+);
+
+ws.onmessage = (event) => {
+  const data = JSON.parse(event.data);
+  console.log(`${data.speaker}: ${data.text}`);
+};
+
+<span class="comment">// Message format:</span>
+{
+  <span class="json-key">"timestamp"</span>: <span class="json-string">"2025-12-01T14:23:52Z"</span>,
+  <span class="json-key">"speaker"</span>: <span class="json-string">"DRONE"</span>,
+  <span class="json-key">"text"</span>: <span class="json-string">"This is SkyRescue. I have an AED."</span>,
+  <span class="json-key">"language"</span>: <span class="json-string">"en"</span>,
+  <span class="json-key">"confidence"</span>: <span class="json-number">0.99</span>
+}</pre>
+                </div>
+            </div>
+
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method method-post">POST</span>
+                    <span class="endpoint-path">/voice/command</span>
+                    <span class="badge badge-auth">Requires Auth</span>
+                </div>
+                <div class="endpoint-description">
+                    Send manual voice command to drone (dispatcher override).
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">Request Body</span>
+                    </div>
+                    <pre>{
+  <span class="json-key">"mission_id"</span>: <span class="json-string">"M-20251201-001"</span>,
+  <span class="json-key">"text"</span>: <span class="json-string">"The ambulance will arrive in 3 minutes."</span>,
+  <span class="json-key">"language"</span>: <span class="json-string">"en"</span>,
+  <span class="json-key">"interrupt"</span>: <span class="json-boolean">false</span>
+}</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Fleet Management -->
+        <section id="fleet" class="section">
+            <h2>Fleet Management</h2>
+
+            <div class="endpoint">
+                <div class="endpoint-header">
+                    <span class="method method-get">GET</span>
+                    <span class="endpoint-path">/fleet/drones</span>
+                    <span class="badge badge-auth">Requires Auth</span>
+                </div>
+                <div class="endpoint-description">
+                    List all drones in fleet with status filtering.
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">Query Parameters</span>
+                    </div>
+                    <pre>?status=READY&coverage_area=boston</pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span class="code-lang">Response</span>
+                    </div>
+                    <pre>{
+  <span class="json-key">"drones"</span>: [
+    {
+      <span class="json-key">"drone_id"</span>: <span class="json-string">"Alpha-3"</span>,
+      <span class="json-key">"status"</span>: <span class="json-string">"READY"</span>,
+      <span class="json-key">"battery"</span>: <span class="json-number">87</span>,
+      <span class="json-key">"location"</span>: { ... }
+    }
+  ],
+  <span class="json-key">"total"</span>: <span class="json-number">10</span>
+}</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- MQTT Topics -->
+        <section id="mqtt" class="section">
+            <h2>MQTT Topics</h2>
+            <p>Real-time drone communication via AWS IoT Core.</p>
+
+            <h3>Command Topics (Cloud → Drone)</h3>
+            <div class="feature-box">
+                <h4>/drone/{drone_id}/command</h4>
+                <p>Send commands to specific drone (launch, abort, return to base)</p>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Launch Command (JSON)</span>
+                </div>
+                <pre>{
+  <span class="json-key">"command"</span>: <span class="json-string">"LAUNCH"</span>,
+  <span class="json-key">"mission_id"</span>: <span class="json-string">"M-001"</span>,
+  <span class="json-key">"destination"</span>: {
+    <span class="json-key">"latitude"</span>: <span class="json-number">42.3601</span>,
+    <span class="json-key">"longitude"</span>: <span class="json-number">-71.0589</span>
+  }
+}</pre>
+            </div>
+
+            <h3>Telemetry Topics (Drone → Cloud)</h3>
+            <div class="feature-box">
+                <h4>/drone/{drone_id}/telemetry</h4>
+                <p>Drone publishes telemetry every 2 seconds during flight</p>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang">Telemetry Message</span>
+                </div>
+                <pre>{
+  <span class="json-key">"timestamp"</span>: <span class="json-string">"2025-12-01T14:23:45Z"</span>,
+  <span class="json-key">"location"</span>: {
+    <span class="json-key">"latitude"</span>: <span class="json-number">42.3589</span>,
+    <span class="json-key">"longitude"</span>: <span class="json-number">-71.0602</span>,
+    <span class="json-key">"altitude"</span>: <span class="json-number">120</span>
+  },
+  <span class="json-key">"battery"</span>: <span class="json-number">84</span>,
+  <span class="json-key">"ai_status"</span>: {
+    <span class="json-key">"landing_zone_confidence"</span>: <span class="json-number">0.92</span>
+  }
+}</pre>
+            </div>
+        </section>
+
+        <!-- Rate Limits -->
+        <section class="section">
+            <h2>Rate Limits</h2>
+            <table>
+                <tr>
+                    <th>Endpoint</th>
+                    <th>Rate Limit</th>
+                </tr>
+                <tr>
+                    <td>POST /emergency/assess</td>
+                    <td>60 requests/minute</td>
+                </tr>
+                <tr>
+                    <td>POST /emergency/launch</td>
+                    <td>30 requests/minute</td>
+                </tr>
+                <tr>
+                    <td>GET /mission/{id}</td>
+                    <td>120 requests/minute</td>
+                </tr>
+                <tr>
+                    <td>WebSocket connections</td>
+                    <td>10 concurrent per dispatcher</td>
+                </tr>
+            </table>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-links">
+            <a href="index.html" class="footer-link">Home</a>
+            <a href="dispatcher.html" class="footer-link">Dispatcher Console</a>
+            <a href="https://github.com/michaelryanpeter/CCS-AI-Lab" class="footer-link" target="_blank">GitHub</a>
+        </div>
+        <p style="opacity: 0.7; margin-top: 15px;">
+            Complete API documentation available in OpenAPI 3.0 format
+        </p>
+        <p style="opacity: 0.5; margin-top: 10px; font-size: 14px;">
+            © 2025 SkyRescue - API v1.0.0
+        </p>
+    </footer>
+
+    <script>
+        function copyCode(button) {
+            const codeBlock = button.closest('.code-block').querySelector('pre');
+            const text = codeBlock.innerText;
+
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.style.background = '#39FF14';
+
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = '#00AEEF';
+                }, 2000);
+            });
+        }
+
+        // Smooth scroll for nav links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

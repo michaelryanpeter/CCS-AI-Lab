@@ -1,0 +1,14 @@
+{
+  "drones": [
+    { "id": 101, "callsign": "ResQ-Alpha", "status": "EN_ROUTE", "battery": 82, "lat": 34.0522, "lon": -118.2437 },
+    { "id": 102, "callsign": "ResQ-Beta", "status": "IDLE", "battery": 100, "lat": 34.0520, "lon": -118.2400 },
+    { "id": 103, "callsign": "ResQ-Gamma", "status": "ON_SCENE", "battery": 45, "lat": 34.0600, "lon": -118.2500 },
+    { "id": 104, "callsign": "ResQ-Delta", "status": "RETURNING", "battery": 15, "lat": 34.0550, "lon": -118.2450 },
+    { "id": 105, "callsign": "ResQ-Epsilon", "status": "IDLE", "battery": 98, "lat": 34.0520, "lon": -118.2400 }
+  ],
+  "incidents": [
+    { "id": 501, "type": "Cardiac Arrest", "priority": "CRITICAL", "assigned_drone": 101 },
+    { "id": 502, "type": "Traffic Accident", "priority": "HIGH", "assigned_drone": 103 },
+    { "id": 503, "type": "Missing Hiker", "priority": "MEDIUM", "assigned_drone": null }
+  ]
+}

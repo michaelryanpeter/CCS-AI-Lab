@@ -142,10 +142,13 @@ prism mock api-docs/skyrescue-api.yaml
 
 SkyRescue uses a **Medical + Technology** palette:
 
-- **Primary: Sky Blue** (`#00AEEF`) - Trust and calmness
+- **Primary: Sky Blue** (`#058DC7`) - Trust and calmness
 - **Secondary: White** (`#FFFFFF`) - Clean and clear
-- **Accent: Neon Green** (`#39FF14`) - Futuristic and attention-grabbing
-- **Dark: Charcoal** (`#333333`) - Text and backgrounds
+- **Accent: Green** (`#50B432`) - Medical vitality and life-saving action
+- **Dark: Gray-Blue** (`#158158`) - Professional contrast
+- **Light Blue: Cyan** (`#24CBE5`) - Interactive highlights
+- **Light Green** (`#64E572`) - Success indicators
+- **Orange** (`#ED561B`) - Alerts and warnings
 
 ---
 

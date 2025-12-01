@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SkyRescue - AI-powered cardiac arrest response drones. First to the scene, first to save.">
+    <title>SkyRescue - Emergency Response Drone System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #003366 0%, #001a33 100%);
+            color: #FFFFFF;
+            min-height: 100vh;
+        }
+
+        :root {
+            --primary: #058DC7;
+            --accent: #50B432;
+            --white: #FFFFFF;
+            --dark: #158158;
+            --light-blue: #24CBE5;
+            --light-green: #64E572;
+            --orange: #ED561B;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, rgba(0, 174, 239, 0.1) 0%, rgba(57, 255, 20, 0.1) 100%);
+        }
+
+        .logo {
+            font-size: 72px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+            color: var(--primary);
+            text-shadow: 0 0 20px rgba(0, 174, 239, 0.5);
+        }
+
+        .tagline {
+            font-size: 24px;
+            margin-bottom: 30px;
+            color: var(--accent);
+            font-weight: 300;
+        }
+
+        .hero-description {
+            font-size: 18px;
+            max-width: 800px;
+            margin: 0 auto 40px;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        /* Stats Section */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 174, 239, 0.3);
+        }
+
+        .stat-number {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            text-transform: uppercase;
+            opacity: 0.8;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: var(--accent);
+            color: var(--dark);
+            padding: 20px 50px;
+            font-size: 24px;
+            font-weight: 700;
+            border: none;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: all 0.3s;
+            box-shadow: 0 5px 20px rgba(57, 255, 20, 0.4);
+            cursor: pointer;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(57, 255, 20, 0.6);
+        }
+
+        .cta-note {
+            margin-top: 20px;
+            font-size: 14px;
+            opacity: 0.7;
+        }
+
+        /* Features Section */
+        .features {
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        .features h2 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 50px;
+            color: var(--primary);
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 174, 239, 0.3);
+            border-radius: 12px;
+            padding: 30px;
+        }
+
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .feature-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+
+        .feature-description {
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        /* Tech Stack */
+        .tech-stack {
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 40px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+        }
+
+        .tech-stack h2 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 30px;
+            color: var(--primary);
+        }
+
+        .tech-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .tech-badge {
+            background: rgba(0, 174, 239, 0.2);
+            border: 1px solid var(--primary);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            margin-top: 60px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-links {
+            margin: 20px 0;
+        }
+
+        .footer-link {
+            color: var(--primary);
+            text-decoration: none;
+            margin: 0 15px;
+            transition: color 0.3s;
+        }
+
+        .footer-link:hover {
+            color: var(--accent);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 36px;
+            }
+
+            .tagline {
+                font-size: 18px;
+            }
+
+            .stat-number {
+                font-size: 36px;
+            }
+
+            .cta-button {
+                font-size: 18px;
+                padding: 15px 35px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="logo"><img src="logo.png" alt="SkyRescue Logo" style="width: 150px; height: 150px; border-radius: 20px;"></div>
+        <h1>SkyRescue</h1>
+        <p class="tagline">"First to the scene, first to save"</p>
+        <p class="hero-description">
+            AI-powered emergency response drones that deliver AEDs to cardiac arrest victims in under 3 minutes.
+            Our Voice AI talks bystanders through life-saving procedures while EMS is en route.
+        </p>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="stat-card">
+            <div class="stat-number">2-3<span style="font-size: 24px;">min</span></div>
+            <div class="stat-label">Drone Response Time</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">5-6<span style="font-size: 24px;">min</span></div>
+            <div class="stat-label">Faster Than Ambulance</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">+30%</div>
+            <div class="stat-label">Survival Rate Increase</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">50K+</div>
+            <div class="stat-label">Lives Saved Annually (Projected)</div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <a href="dispatcher.html" class="cta-button">
+            🚁 Launch Dispatcher Console
+        </a>
+        <p class="cta-note">Interactive demo - No login required</p>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <h2>Why SkyRescue?</h2>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <div class="feature-title">Lightning Fast Response</div>
+                <div class="feature-description">
+                    Autonomous drones reach cardiac arrest victims in 2-3 minutes,
+                    5-6 minutes faster than traditional ambulances.
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🗣️</div>
+                <div class="feature-title">Voice AI Guidance</div>
+                <div class="feature-description">
+                    Onboard voice AI talks bystanders through AED deployment and CPR,
+                    dramatically increasing successful use by untrained people.
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🌍</div>
+                <div class="feature-title">Multi-Language Support</div>
+                <div class="feature-description">
+                    Automatic detection of 99 languages with pre-translated medical
+                    scripts for the top 10 US languages.
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📡</div>
+                <div class="feature-title">Works Offline</div>
+                <div class="feature-description">
+                    All critical AI runs on the drone itself. No internet required.
+                    Guaranteed reliability even in areas with poor cell coverage.
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🤖</div>
+                <div class="feature-title">AI-Powered Decision Support</div>
+                <div class="feature-description">
+                    95% confidence AI recommendations help dispatchers make
+                    launch decisions in under 500 milliseconds.
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🏥</div>
+                <div class="feature-title">FDA-Ready Safety</div>
+                <div class="feature-description">
+                    Pre-scripted medical protocols for critical steps ensure
+                    zero hallucination risk and regulatory compliance.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Stack -->
+    <section class="tech-stack">
+        <h2>Technology Stack</h2>
+        <div class="tech-list">
+            <span class="tech-badge">NVIDIA Jetson Orin Nano</span>
+            <span class="tech-badge">Whisper (Speech Recognition)</span>
+            <span class="tech-badge">Phi-3 (Dialogue AI)</span>
+            <span class="tech-badge">Piper TTS</span>
+            <span class="tech-badge">AWS IoT Core</span>
+            <span class="tech-badge">PostgreSQL + TimescaleDB</span>
+            <span class="tech-badge">YOLOv8 (Computer Vision)</span>
+            <span class="tech-badge">WebSocket Real-time</span>
+            <span class="tech-badge">MQTT Pub/Sub</span>
+            <span class="tech-badge">Edge AI (<250ms latency)</span>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-links">
+            <a href="dispatcher.html" class="footer-link">Dispatcher Console</a>
+            <a href="https://github.com/michaelryanpeter/CCS-AI-Lab" class="footer-link" target="_blank">GitHub Repository</a>
+            <a href="api-docs.html" class="footer-link">API Documentation</a>
+        </div>
+        <p style="opacity: 0.7; margin-top: 20px;">
+            Built with AI tools in 4 hours for the AI Lab Workshop
+        </p>
+        <p style="opacity: 0.5; margin-top: 10px; font-size: 14px;">
+            © 2025 SkyRescue - Demonstrating AI-Powered Velocity
+        </p>
+    </footer>
+
+    <script>
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.stat-card, .feature-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'opacity 0.6s, transform 0.6s';
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>

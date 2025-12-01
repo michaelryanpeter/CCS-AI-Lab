@@ -1,0 +1,22 @@
+graph TD
+    subgraph "Control Center"
+        A[Voice AI Input] -->|Transcribed Intent| B(Dispatcher Engine)
+        B -->|WebSocket Push| C[Dashboard UI]
+        B -->|Command/Assignment| D[Fleet Manager API]
+    end
+
+    subgraph "Cloud Infrastructure"
+        D -->|Write| E[(PostgreSQL DB)]
+        D -->|Pub/Sub| F[MQTT Broker]
+    end
+
+    subgraph "Field Operations"
+        F -->|Flight Path| G[Drone 1: ResQ-Alpha]
+        F -->|Flight Path| H[Drone 2: ResQ-Beta]
+        G -->|Telemetry Stream| F
+        H -->|Telemetry Stream| F
+    end
+
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+    style G fill:#bbf,stroke:#333,stroke-width:2px
+    style H fill:#bbf,stroke:#333,stroke-width:2px
