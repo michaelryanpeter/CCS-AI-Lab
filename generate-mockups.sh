@@ -24,6 +24,9 @@ fi
 echo "📐 Generating D2 diagrams..."
 
 if command -v d2 &> /dev/null; then
+    d2 --theme=200 dispatcher-console.d2 dispatcher-console.svg
+    echo "   ✓ dispatcher-console.svg"
+
     d2 --theme=200 drone-dashboard.d2 drone-dashboard.svg
     echo "   ✓ drone-dashboard.svg"
 
@@ -31,6 +34,7 @@ if command -v d2 &> /dev/null; then
     echo "   ✓ mission-planning.svg"
 
     # Generate PNG versions too
+    d2 --theme=200 dispatcher-console.d2 dispatcher-console.png
     d2 --theme=200 drone-dashboard.d2 drone-dashboard.png
     d2 --theme=200 mission-planning.d2 mission-planning.png
     echo "   ✓ PNG versions created"
@@ -55,6 +59,7 @@ echo ""
 ls -lh *.svg *.png 2>/dev/null | awk '{print "   " $9 " (" $5 ")"}'
 echo ""
 echo "📂 View mockups:"
+echo "   xdg-open dispatcher-console.svg"
 echo "   xdg-open drone-dashboard.svg"
 echo "   xdg-open mission-planning.svg"
 echo "   xdg-open dashboard.png"

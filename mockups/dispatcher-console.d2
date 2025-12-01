@@ -1,0 +1,272 @@
+# SkyRescue Dispatcher Console - 911 Integration
+# Generate with: d2 --theme=200 dispatcher-console.d2 dispatcher-console.svg
+
+direction: down
+
+title: SkyRescue Dispatcher Console {
+  style.font-size: 24
+}
+
+# Main Application Container
+DispatchConsole: {
+  style: {
+    fill: "#333333"
+    stroke: "#00AEEF"
+    stroke-width: 3
+  }
+
+  # Header Bar
+  Header: {
+    style: {
+      fill: "#00AEEF"
+    }
+
+    Logo: "💙 SkyRescue Dispatch" {
+      style: {
+        font-size: 20
+        bold: true
+        fill: "#FFFFFF"
+      }
+    }
+
+    Status: "● OPERATIONAL" {
+      style: {
+        fill: "#39FF14"
+        font-size: 14
+      }
+    }
+
+    Dispatcher: "Dispatcher: J. Smith" {
+      style: {
+        font-size: 14
+        fill: "#FFFFFF"
+      }
+    }
+  }
+
+  # Main Content Area
+  MainContent: {
+    # Left Panel - Emergency Info & Launch
+    EmergencyPanel: {
+      style: {
+        fill: "#1A1A1A"
+        stroke: "#00AEEF"
+        stroke-width: 2
+      }
+
+      CallInfo: "🚨 ACTIVE EMERGENCY\n\nType: Cardiac Arrest\nLocation: 123 Main St, Boston MA\nCoords: 42.3601°N, 71.0589°W\nCaller: On-scene witness\nBystander available: YES" {
+        style: {
+          font-size: 14
+          fill: "#FFFFFF"
+        }
+      }
+
+      DroneRecommendation: {
+        style: {
+          fill: "#00AEEF"
+          stroke: "#39FF14"
+        }
+
+        Title: "AI RECOMMENDATION: LAUNCH" {
+          style: {
+            bold: true
+            font-size: 16
+            fill: "#FFFFFF"
+          }
+        }
+
+        Details: "Nearest Drone: Unit Alpha-3\nDistance: 2.1 miles\nDrone ETA: 2 min 15 sec\nAmbulance ETA: 8 min 00 sec\nTime Advantage: 5 min 45 sec\n\nBattery: 87% (40 min flight)\nWeather: Clear, 15mph wind\nFlight Risk: LOW\nConfidence: 95%" {
+          style: {
+            fill: "#FFFFFF"
+            font-size: 13
+          }
+        }
+      }
+
+      LaunchButton: "🚁 LAUNCH SKYRESCUE" {
+        style: {
+          fill: "#39FF14"
+          stroke: "#39FF14"
+          stroke-width: 3
+          font-size: 18
+          bold: true
+          fill: "#333333"
+        }
+      }
+
+      CancelButton: "Cancel" {
+        style: {
+          fill: "#666666"
+          stroke: "#666666"
+        }
+      }
+    }
+
+    # Center Panel - Live Map & Drone Position
+    MapPanel: {
+      style: {
+        fill: "#000000"
+        stroke: "#00AEEF"
+        stroke-width: 2
+      }
+
+      Map: "🗺️ LIVE MAP\n\n📍 Emergency: 123 Main St\n🚁 Drone Alpha-3: 2.1 mi away\n🚑 Ambulance E-12: En route\n\n━━━ Drone flight path\n━ ━ No-fly zones\n✓ Landing zones detected: 3" {
+        style: {
+          font-size: 13
+          fill: "#00AEEF"
+        }
+      }
+
+      ETA: "DRONE ETA: 2:15" {
+        style: {
+          fill: "#39FF14"
+          font-size: 16
+          bold: true
+        }
+      }
+    }
+
+    # Right Panel - Voice AI Interaction
+    VoicePanel: {
+      style: {
+        fill: "#1A1A1A"
+        stroke: "#39FF14"
+        stroke-width: 2
+      }
+
+      VoiceStatus: {
+        style: {
+          fill: "#00AEEF"
+        }
+
+        Title: "🎤 VOICE AI STATUS" {
+          style: {
+            bold: true
+            font-size: 14
+            fill: "#FFFFFF"
+          }
+        }
+
+        Status: "● Active\n🌐 Language: English (auto-detected)\n🔊 Speaker: 100dB\n🎙️ Microphone: 4-array active\nLatency: 187ms" {
+          style: {
+            fill: "#FFFFFF"
+            font-size: 12
+          }
+        }
+      }
+
+      LiveTranscript: {
+        style: {
+          fill: "#000000"
+          stroke: "#39FF14"
+        }
+
+        Title: "📝 LIVE CONVERSATION" {
+          style: {
+            bold: true
+            font-size: 14
+            fill: "#39FF14"
+          }
+        }
+
+        Transcript: "[14:23:52] DRONE: This is SkyRescue.\n            I have an AED. Can you help?\n\n[14:23:55] BYSTANDER: Yes! What do I do?!\n\n[14:23:57] DRONE: Is the person breathing?\n            Check if their chest is moving.\n\n[14:24:01] BYSTANDER: No! It's not moving!\n\n[14:24:03] DRONE: I'm opening the AED now.\n            Remove the yellow device." {
+          style: {
+            fill: "#39FF14"
+            font-size: 11
+            font: mono
+          }
+        }
+      }
+
+      VoiceControls: {
+        style: {
+          fill: "#333333"
+        }
+
+        MuteButton: "🔇 Mute Drone" {
+          style: {
+            fill: "#666666"
+            stroke: "#666666"
+          }
+        }
+
+        ManualOverride: "📢 Manual Override" {
+          style: {
+            fill: "#00AEEF"
+            stroke: "#00AEEF"
+          }
+        }
+      }
+    }
+  }
+
+  # Bottom Panel - Mission Log & Telemetry
+  BottomPanel: {
+    # Drone Telemetry
+    Telemetry: {
+      style: {
+        fill: "#1A1A1A"
+        stroke: "#00AEEF"
+      }
+
+      Title: "DRONE TELEMETRY" {
+        style: {
+          bold: true
+          font-size: 13
+          fill: "#00AEEF"
+        }
+      }
+
+      Data: "Altitude: 125m | Speed: 15 m/s | Battery: 87%\nGPS: Fixed (12 sats) | AI Detections: 8 objects\nLanding Zone Confidence: 92%" {
+        style: {
+          fill: "#FFFFFF"
+          font-size: 11
+        }
+      }
+    }
+
+    # Mission Log
+    MissionLog: {
+      style: {
+        fill: "#000000"
+        stroke: "#666666"
+      }
+
+      Title: "MISSION LOG" {
+        style: {
+          bold: true
+          font-size: 13
+          fill: "#00AEEF"
+        }
+      }
+
+      Log: "[14:24:05] Voice AI: Guiding bystander through AED deployment\n[14:24:00] Drone: Opening AED compartment\n[14:23:55] Voice AI: Conversation initiated with bystander\n[14:23:50] Drone: Landing zone detected - confidence 92%\n[14:23:45] Drone: Arrived at emergency location\n[14:23:30] Drone: Autonomous flight active\n[14:23:15] Dispatcher: Launched Unit Alpha-3\n[14:23:10] AI: Recommended launch - 95% confidence\n[14:23:05] 911 Call: Cardiac arrest emergency received" {
+        style: {
+          font-size: 10
+          font: mono
+          fill: "#39FF14"
+        }
+      }
+    }
+  }
+}
+
+# Data Flow Connections
+DispatchConsole.MainContent.EmergencyPanel -> DispatchConsole.MainContent.MapPanel: "Launch Command" {
+  style.stroke: "#39FF14"
+  style.stroke-width: 2
+}
+
+DispatchConsole.MainContent.MapPanel -> DispatchConsole.MainContent.VoicePanel: "Drone Status" {
+  style.stroke: "#00AEEF"
+  style.stroke-dash: 3
+}
+
+DispatchConsole.MainContent.VoicePanel -> DispatchConsole.BottomPanel.MissionLog: "Voice Logs" {
+  style.stroke: "#39FF14"
+  style.stroke-dash: 3
+}
+
+DispatchConsole.MainContent.MapPanel -> DispatchConsole.BottomPanel.Telemetry: "Telemetry Data" {
+  style.stroke: "#00AEEF"
+}
