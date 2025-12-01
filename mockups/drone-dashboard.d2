@@ -1,0 +1,229 @@
+# DroneAI Control Dashboard - Main UI
+# Generate with: d2 drone-dashboard.d2 drone-dashboard.svg
+# Or with theme: d2 --theme=200 drone-dashboard.d2 drone-dashboard.svg
+
+direction: down
+
+title: DroneAI Control System - Main Dashboard {
+  style.font-size: 24
+}
+
+# Main Application Container
+App: {
+  style: {
+    fill: "#1C1C1E"
+    stroke: "#0A84FF"
+    stroke-width: 3
+  }
+
+  # Header Bar
+  Header: {
+    style: {
+      fill: "#2C2C2E"
+    }
+
+    Logo: "🚁 DroneAI Control" {
+      style: {
+        font-size: 18
+        bold: true
+      }
+    }
+
+    Connection: "● Connected" {
+      style: {
+        fill: "#30D158"
+        font-size: 14
+      }
+    }
+
+    User: "Pilot-001" {
+      style.font-size: 14
+    }
+  }
+
+  # Main Content Area
+  MainContent: {
+    # Left Panel - Video Feed
+    VideoPanel: {
+      style: {
+        fill: "#000000"
+        stroke: "#0A84FF"
+        stroke-width: 2
+      }
+
+      VideoFeed: "📹 LIVE FEED\n1080p @ 30fps\nLatency: 87ms" {
+        style: {
+          font-size: 14
+          fill: "#00FF00"
+        }
+      }
+
+      AIOverlay: "AI DETECTIONS\n├─ Car (98%)\n├─ Tree (95%)\n└─ Person (92%)" {
+        style: {
+          fill: "#FF9F0A"
+          font-size: 12
+        }
+      }
+    }
+
+    # Right Panel - Telemetry & Controls
+    RightPanel: {
+      # Telemetry Data
+      Telemetry: {
+        style: {
+          fill: "#2C2C2E"
+          stroke: "#30D158"
+        }
+
+        Title: "TELEMETRY" {
+          style: {
+            bold: true
+            font-size: 14
+          }
+        }
+
+        Altitude: "↑ Altitude\n125 m" {
+          style: {
+            fill: "#30D158"
+            font-size: 16
+            bold: true
+          }
+        }
+
+        Speed: "→ Speed\n15 m/s" {
+          style: {
+            fill: "#0A84FF"
+            font-size: 16
+            bold: true
+          }
+        }
+
+        Battery: "⚡ Battery\n87%" {
+          style: {
+            fill: "#30D158"
+            font-size: 16
+            bold: true
+          }
+        }
+
+        GPS: "📍 GPS\nFixed (12 sats)" {
+          style: {
+            fill: "#30D158"
+            font-size: 14
+          }
+        }
+      }
+
+      # AI Status Panel
+      AIStatus: {
+        style: {
+          fill: "#2C2C2E"
+          stroke: "#FF9F0A"
+        }
+
+        Title: "AI STATUS" {
+          style: {
+            bold: true
+            font-size: 14
+          }
+        }
+
+        ObjectDetection: "● Object Detection\n12 objects active" {
+          style.fill: "#30D158"
+        }
+
+        CollisionAvoid: "● Collision Avoidance\nActive" {
+          style.fill: "#30D158"
+        }
+
+        PathPlanning: "● Path Planning\nAutonomous mode" {
+          style.fill: "#30D158"
+        }
+
+        Confidence: "⚙ Avg Confidence\n95%" {
+          style.fill: "#0A84FF"
+        }
+      }
+
+      # Flight Controls
+      Controls: {
+        style: {
+          fill: "#2C2C2E"
+          stroke: "#FF453A"
+        }
+
+        Title: "FLIGHT MODE" {
+          style: {
+            bold: true
+            font-size: 14
+          }
+        }
+
+        Manual: "Manual" {
+          style: {
+            fill: "#3C3C3E"
+            stroke: "#666"
+          }
+        }
+
+        Assisted: "AI-Assisted ✓" {
+          style: {
+            fill: "#0A84FF"
+            stroke: "#0A84FF"
+            bold: true
+          }
+        }
+
+        Autonomous: "Autonomous" {
+          style: {
+            fill: "#3C3C3E"
+            stroke: "#666"
+          }
+        }
+
+        RTH: "🏠 Return Home" {
+          style: {
+            fill: "#FF9F0A"
+            stroke: "#FF9F0A"
+          }
+        }
+
+        Emergency: "⚠️ EMERGENCY LAND" {
+          style: {
+            fill: "#FF453A"
+            stroke: "#FF453A"
+            bold: true
+          }
+        }
+      }
+    }
+  }
+
+  # Footer - System Log
+  Footer: {
+    style: {
+      fill: "#2C2C2E"
+    }
+
+    Log: "SYSTEM LOG\n[14:23:45] Waypoint 3/5 reached\n[14:23:40] AI obstacle detection: path adjusted\n[14:23:35] Altitude hold at 125m" {
+      style: {
+        font-size: 11
+        font: mono
+      }
+    }
+  }
+}
+
+# Data Flow Connections
+App.MainContent.VideoPanel -> App.MainContent.RightPanel.AIStatus: "AI Processing" {
+  style.stroke: "#FF9F0A"
+}
+
+App.MainContent.RightPanel.Controls.Assisted -> App.MainContent.RightPanel.AIStatus: "Controls" {
+  style.stroke: "#0A84FF"
+}
+
+App.MainContent.RightPanel.Telemetry -> App.Footer.Log: "Logs" {
+  style.stroke: "#666"
+  style.stroke-dash: 3
+}

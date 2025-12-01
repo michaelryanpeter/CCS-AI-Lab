@@ -1,0 +1,176 @@
+# Mission Planning Interface
+# Generate with: d2 mission-planning.d2 mission-planning.svg
+
+direction: right
+
+MissionPlanning: {
+  style: {
+    fill: "#1C1C1E"
+    stroke: "#0A84FF"
+  }
+
+  # Map Interface
+  MapView: {
+    style: {
+      fill: "#2C2C2E"
+      stroke: "#30D158"
+      stroke-width: 2
+    }
+
+    Map: "🗺️ MAP VIEW\n\nWaypoints:\n  1. Launch Point\n  2. Survey Area A\n  3. Survey Area B\n  4. Return Point" {
+      style: {
+        font-size: 14
+      }
+    }
+
+    Waypoint1: "📍 WP1\nLaunch" {
+      style: {
+        fill: "#30D158"
+        stroke: "#30D158"
+      }
+    }
+
+    Waypoint2: "📍 WP2\nSurvey" {
+      style: {
+        fill: "#0A84FF"
+        stroke: "#0A84FF"
+      }
+    }
+
+    Waypoint3: "📍 WP3\nSurvey" {
+      style: {
+        fill: "#0A84FF"
+        stroke: "#0A84FF"
+      }
+    }
+
+    Waypoint4: "📍 WP4\nRTH" {
+      style: {
+        fill: "#FF9F0A"
+        stroke: "#FF9F0A"
+      }
+    }
+  }
+
+  # Mission Parameters
+  Parameters: {
+    style: {
+      fill: "#2C2C2E"
+      stroke: "#FF9F0A"
+    }
+
+    Title: "MISSION PARAMETERS" {
+      style: {
+        bold: true
+        font-size: 14
+      }
+    }
+
+    Type: "Type: Area Survey" {
+      style.font-size: 12
+    }
+
+    Altitude: "Altitude: 100m" {
+      style.font-size: 12
+    }
+
+    Speed: "Speed: 12 m/s" {
+      style.font-size: 12
+    }
+
+    Duration: "Est. Duration: 15 min" {
+      style.font-size: 12
+    }
+
+    Distance: "Total Distance: 3.2 km" {
+      style.font-size: 12
+    }
+  }
+
+  # AI Objectives
+  AIConfig: {
+    style: {
+      fill: "#2C2C2E"
+      stroke: "#0A84FF"
+    }
+
+    Title: "AI OBJECTIVES" {
+      style: {
+        bold: true
+        font-size: 14
+      }
+    }
+
+    Obj1: "☑ Object Detection\nConfidence: 85%" {
+      style.fill: "#30D158"
+    }
+
+    Obj2: "☑ Perimeter Patrol\nPattern: Grid" {
+      style.fill: "#30D158"
+    }
+
+    Obj3: "☑ Area Survey\n4K Photos @ 5s" {
+      style.fill: "#30D158"
+    }
+
+    Obj4: "☐ Thermal Imaging\nNot available" {
+      style.fill: "#666"
+    }
+  }
+
+  # Mission Controls
+  Actions: {
+    style: {
+      fill: "#2C2C2E"
+    }
+
+    Upload: "📤 Upload Mission" {
+      style: {
+        fill: "#0A84FF"
+        stroke: "#0A84FF"
+      }
+    }
+
+    Validate: "✓ Validate Path" {
+      style: {
+        fill: "#30D158"
+        stroke: "#30D158"
+      }
+    }
+
+    Save: "💾 Save Draft" {
+      style: {
+        fill: "#666"
+        stroke: "#666"
+      }
+    }
+
+    Clear: "🗑️ Clear All" {
+      style: {
+        fill: "#FF453A"
+        stroke: "#FF453A"
+      }
+    }
+  }
+}
+
+# Connections
+MissionPlanning.MapView.Waypoint1 -> MissionPlanning.MapView.Waypoint2: "Leg 1" {
+  style.stroke: "#30D158"
+}
+
+MissionPlanning.MapView.Waypoint2 -> MissionPlanning.MapView.Waypoint3: "Leg 2" {
+  style.stroke: "#0A84FF"
+}
+
+MissionPlanning.MapView.Waypoint3 -> MissionPlanning.MapView.Waypoint4: "Leg 3" {
+  style.stroke: "#FF9F0A"
+}
+
+MissionPlanning.Parameters -> MissionPlanning.Actions.Validate: "Check" {
+  style.stroke-dash: 3
+}
+
+MissionPlanning.AIConfig -> MissionPlanning.MapView: "Apply" {
+  style.stroke-dash: 3
+}

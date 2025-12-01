@@ -1,0 +1,116 @@
+@startsalt
+title DroneAI Control Dashboard - Detailed Wireframe
+scale 1.5
+{+
+  {* <size:16><b>🚁 DroneAI Control</b></size> | User: <b>Pilot-001</b> | <color:green>● Connected</color> | Battery: <color:green>87%</color> }
+  ==
+  {
+    {
+      {
+        <size:14><b>📹 LIVE CAMERA FEED</b></size>
+        <color:gray>1080p @ 30fps | Latency: 87ms</color>
+        --
+        |
+        <size:12><b>[AI OBJECT DETECTION OVERLAY]</b></size>
+        |
+        <color:blue>Detected Objects (12):</color>
+        • Car (98% confidence)
+        • Tree (95% confidence)
+        • Person (92% confidence)
+        • Building (89% confidence)
+        |
+        <color:orange>[Collision Warning Zone]</color>
+      }
+      |
+      {
+        <b><size:14>TELEMETRY</size></b>
+        ====
+        Altitude  | <size:16><color:green><b>125 m</b></color></size>
+        Speed     | <size:16><color:blue><b>15 m/s</b></color></size>
+        Battery   | <size:16><color:green><b>87%</b></color></size>
+        GPS       | <color:green><b>Fixed (12 sats)</b></color>
+        Heading   | <b>045° NE</b>
+        Distance  | <b>2.3 km</b>
+        Lat/Lon   | 42.3601° N, 71.0589° W
+        --
+        <b><size:14>FLIGHT STATUS</size></b>
+        ====
+        Mode      | <color:blue><b>AI-Assisted</b></color>
+        Arm State | <color:green><b>Armed</b></color>
+        Flight Time | <b>08:32</b>
+        Home Dist | <b>2.3 km</b>
+      }
+    }
+    ==
+    {
+      {
+        <b><size:14>AI STATUS PANEL</size></b>
+        ====
+        [X] <b>Object Detection</b>
+        <color:green>● Active (12 objects detected)</color>
+        Confidence threshold: 85%
+        --
+        [X] <b>Collision Avoidance</b>
+        <color:green>● Active (Safe zone: 50m)</color>
+        Next obstacle: 125m ahead
+        --
+        [X] <b>Path Planning</b>
+        <color:green>● Autonomous mode engaged</color>
+        Waypoint: 3/5 (ETA: 4m 20s)
+        --
+        [X] <b>Semantic Segmentation</b>
+        <color:green>● Terrain mapped</color>
+        Surface: Grass/Trees
+        --
+        [ ] <b>Landing Pad Detection</b>
+        <color:gray>● Inactive (Out of range)</color>
+      }
+      |
+      {
+        <b><size:14>FLIGHT MODE</size></b>
+        ====
+        Flight Control Mode:
+        {
+          ( ) Manual Control
+          (X) <b><color:blue>AI-Assisted</color></b>
+          ( ) Fully Autonomous
+        }
+        --
+        <b><size:14>MISSION CONTROLS</size></b>
+        ====
+        [  Start Mission  ]
+        [  Pause Mission  ]
+        [ Resume Mission ]
+        --
+        <b><size:14>CAMERA CONTROLS</size></b>
+        ====
+        Gimbal: [-30°] {^} {v} [+30°]
+        Zoom: [1x] [2x] [4x] [8x]
+        [📷 Take Photo] [🎥 Record]
+        --
+        <b><size:14>EMERGENCY</size></b>
+        ====
+        {
+          [<color:orange><b> 🏠 Return to Home </b></color>]
+          [<color:red><b> ⚠️ EMERGENCY LAND </b></color>]
+        }
+      }
+    }
+    ==
+    {
+      <b><size:14>SYSTEM LOG</size></b> | <color:gray>Real-time telemetry stream | Upload: 2.1 KB/s | Download: 45 KB/s</color>
+      --
+      {SI
+        <font:monospaced>[14:23:45] INFO: Mission waypoint 3/5 reached successfully
+        [14:23:40] WARN: AI detected obstacle at bearing 045°, path adjusted +15m altitude
+        [14:23:35] INFO: Altitude hold engaged at 125m AGL
+        [14:23:30] INFO: AI-Assisted flight mode activated
+        [14:23:25] INFO: GPS lock acquired (12 satellites, HDOP: 0.8)
+        [14:23:20] INFO: Pre-flight checks completed - Ready for takeoff
+        [14:23:15] INFO: Battery health: 100% (4200 mAh remaining)
+        [14:23:10] INFO: Connection established to Drone-Alpha-001
+      }
+    }
+  }
+}
+@endsalt

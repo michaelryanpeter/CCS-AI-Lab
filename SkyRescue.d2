@@ -1,0 +1,38 @@
+ # dashboard.d2
+  direction: right
+
+  Dashboard: {
+    shape: rectangle
+    style.fill: "#2C2C2E"
+
+    Header: {
+      shape: rectangle
+      style.fill: "#1C1C1E"
+      Logo: DroneAI Control
+      Status: Connected
+    }
+
+    VideoFeed: {
+      shape: rectangle
+      width: 600
+      height: 400
+      label: "📹 Live Camera\n(AI Overlay)"
+      style.fill: "#000"
+    }
+
+    Telemetry: {
+      shape: rectangle
+      Altitude: 125m
+      Speed: 15 m/s
+      Battery: 87%
+      GPS: Fixed
+    }
+
+    Controls: {
+      shape: rectangle
+      Manual: Button
+      Assisted: Button
+      Autonomous: Button
+      RTH: Emergency Button
+    }
+  }
