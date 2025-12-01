@@ -1,0 +1,822 @@
+openapi: 3.0.3
+info:
+  title: SkyRescue Emergency Response API
+  description: |
+    AI-powered cardiac arrest response drone system API for 911 dispatchers.
+
+    ## Overview
+    SkyRescue provides rapid AED delivery via autonomous drones launched by 911 dispatchers.
+
+    ## Key Features
+    - Emergency assessment and drone recommendation
+    - Autonomous drone launch and flight
+    - Real-time voice AI interaction with patients/bystanders
+    - Live telemetry and mission tracking
+    - Multi-language support
+
+    ## System Architecture
+    - **Edge AI**: NVIDIA Jetson Orin Nano on drone (person detection, landing zone, voice AI)
+    - **Cloud AI**: AWS (route optimization, fleet coordination, dispatch integration)
+    - **Voice AI**: Whisper-tiny (STT) + Hybrid FSM/Phi-3 (dialogue) + Piper (TTS)
+
+  version: 1.0.0
+  contact:
+    name: SkyRescue Technical Team
+    email: tech@skyrescue.ai
+  license:
+    name: Proprietary
+
+servers:
+  - url: https://api.skyrescue.ai/v1
+    description: Production API
+  - url: https://staging-api.skyrescue.ai/v1
+    description: Staging environment
+  - url: http://localhost:8080/v1
+    description: Local development
+
+tags:
+  - name: Emergency
+    description: Emergency assessment and drone launch operations
+  - name: Mission
+    description: Mission tracking and telemetry
+  - name: Voice
+    description: Voice AI interaction and transcript streaming
+  - name: Fleet
+    description: Drone fleet management
+  - name: Dispatch
+    description: 911 dispatch system integration
+
+security:
+  - DispatcherAuth: []
+  - APIKeyAuth: []
+
+paths:
+  /emergency/assess:
+    post:
+      tags:
+        - Emergency
+      summary: Assess emergency and get drone recommendation
+      description: |
+        AI analyzes emergency details and recommends whether to launch a drone.
+
+        Decision factors:
+        - Nearest available drone location
+        - Weather conditions and flight safety
+        - ETA comparison (drone vs ambulance)
+        - Landing zone availability
+        - Bystander presence
+
+        Returns confidence score (0-100) and detailed reasoning.
+      operationId: assessEmergency
+      security:
+        - DispatcherAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmergencyAssessmentRequest'
+            example:
+              emergency_type: "cardiac_arrest"
+              location:
+                latitude: 42.3601
+                longitude: -71.0589
+                address: "123 Main St, Boston MA"
+              caller_info:
+                on_scene: true
+                can_assist: true
+                language: "en"
+              additional_info:
+                victim_age: 55
+                symptoms: "unresponsive, not breathing"
+      responses:
+        '200':
+          description: Emergency assessed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmergencyAssessmentResponse'
+              example:
+                recommendation: "LAUNCH"
+                confidence: 0.95
+                reasoning:
+                  nearest_drone: "Alpha-3"
+                  drone_eta: "2:15"
+                  ambulance_eta: "8:00"
+                  time_advantage: "5:45"
+                  weather_safe: true
+                  landing_zones_available: 3
+                  bystander_present: true
+                  risk_level: "LOW"
+                alternative_drones:
+                  - unit: "Beta-1"
+                    eta: "3:20"
+                    battery: "92%"
+                  - unit: "Gamma-5"
+                    eta: "4:10"
+                    battery: "78%"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
+
+  /emergency/launch:
+    post:
+      tags:
+        - Emergency
+      summary: Launch drone to emergency location
+      description: |
+        Dispatcher command to launch selected drone to emergency.
+
+        Creates mission record and sends MQTT command to drone.
+        Drone autonomously flies to destination and delivers AED.
+      operationId: launchDrone
+      security:
+        - DispatcherAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DroneLaunchRequest'
+            example:
+              emergency_id: "CA-20251201-001"
+              drone_id: "Alpha-3"
+              destination:
+                latitude: 42.3601
+                longitude: -71.0589
+              dispatcher_id: "D-Smith-001"
+              priority: "EMERGENCY"
+      responses:
+        '201':
+          description: Drone launched successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DroneLaunchResponse'
+              example:
+                mission_id: "M-20251201-001"
+                drone_id: "Alpha-3"
+                status: "LAUNCHED"
+                eta: "2:15"
+                launch_time: "2025-12-01T14:23:15Z"
+                websocket_url: "wss://api.skyrescue.ai/v1/mission/M-20251201-001/updates"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          description: Drone not available
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                error: "DRONE_UNAVAILABLE"
+                message: "Drone Alpha-3 is currently in flight"
+
+  /mission/{mission_id}:
+    get:
+      tags:
+        - Mission
+      summary: Get mission status and details
+      description: Retrieve current status, telemetry, and history for a mission.
+      operationId: getMission
+      parameters:
+        - name: mission_id
+          in: path
+          required: true
+          schema:
+            type: string
+          example: "M-20251201-001"
+      responses:
+        '200':
+          description: Mission details retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mission'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /mission/{mission_id}/abort:
+    post:
+      tags:
+        - Mission
+      summary: Abort active mission
+      description: |
+        Emergency abort command. Drone will:
+        1. Stop autonomous flight
+        2. Return to base (if safe)
+        3. Emergency land (if necessary)
+      operationId: abortMission
+      parameters:
+        - name: mission_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+                  example: "Incorrect location"
+                abort_mode:
+                  type: string
+                  enum: [RETURN_TO_BASE, EMERGENCY_LAND]
+                  default: RETURN_TO_BASE
+      responses:
+        '200':
+          description: Abort command sent
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "ABORTING"
+
+  /voice/transcript:
+    get:
+      tags:
+        - Voice
+      summary: Stream live voice conversation transcript
+      description: |
+        WebSocket endpoint for real-time voice AI transcript.
+
+        Returns drone-bystander conversation with:
+        - Speaker identification (DRONE/BYSTANDER)
+        - Timestamps
+        - Detected language
+        - Confidence scores
+      operationId: getVoiceTranscript
+      parameters:
+        - name: mission_id
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: Upgrade
+          in: header
+          required: true
+          schema:
+            type: string
+            enum: [websocket]
+        - name: Connection
+          in: header
+          required: true
+          schema:
+            type: string
+            enum: [Upgrade]
+      responses:
+        '101':
+          description: Switching to WebSocket protocol
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VoiceTranscriptMessage'
+              examples:
+                droneSpeak:
+                  summary: Drone speaking
+                  value:
+                    timestamp: "2025-12-01T14:23:52Z"
+                    speaker: "DRONE"
+                    text: "This is SkyRescue. I have an AED. Can you help?"
+                    language: "en"
+                    confidence: 0.99
+                bystanderResponse:
+                  summary: Bystander responding
+                  value:
+                    timestamp: "2025-12-01T14:23:55Z"
+                    speaker: "BYSTANDER"
+                    text: "Yes! What do I do?!"
+                    language: "en"
+                    confidence: 0.87
+
+  /voice/command:
+    post:
+      tags:
+        - Voice
+      summary: Send manual voice command to drone
+      description: |
+        Dispatcher override to make drone speak specific text.
+
+        Use cases:
+        - Provide additional instructions
+        - Relay information from EMS
+        - Manual intervention in conversation
+      operationId: sendVoiceCommand
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - mission_id
+                - text
+              properties:
+                mission_id:
+                  type: string
+                  example: "M-20251201-001"
+                text:
+                  type: string
+                  example: "The ambulance will arrive in 3 minutes. Keep using the AED."
+                language:
+                  type: string
+                  default: "en"
+                  example: "en"
+                interrupt:
+                  type: boolean
+                  description: Whether to interrupt current drone speech
+                  default: false
+      responses:
+        '200':
+          description: Command sent to drone
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "QUEUED"
+                  estimated_speak_time:
+                    type: string
+                    format: date-time
+
+  /voice/mute:
+    post:
+      tags:
+        - Voice
+      summary: Mute or unmute drone voice AI
+      description: Temporarily disable/enable voice interaction.
+      operationId: muteVoice
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - mission_id
+                - muted
+              properties:
+                mission_id:
+                  type: string
+                muted:
+                  type: boolean
+                  description: true to mute, false to unmute
+      responses:
+        '200':
+          description: Mute status updated
+
+  /fleet/drones:
+    get:
+      tags:
+        - Fleet
+      summary: List all drones in fleet
+      description: Get status of all drones in dispatcher's coverage area.
+      operationId: listDrones
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [READY, CHARGING, IN_FLIGHT, MAINTENANCE, OFFLINE]
+        - name: coverage_area
+          in: query
+          description: Filter by coverage area ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of drones
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  drones:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Drone'
+                  total:
+                    type: integer
+
+  /fleet/drones/{drone_id}:
+    get:
+      tags:
+        - Fleet
+      summary: Get drone details
+      description: Detailed information about specific drone.
+      operationId: getDrone
+      parameters:
+        - name: drone_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Drone details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Drone'
+
+  /dispatch/webhook:
+    post:
+      tags:
+        - Dispatch
+      summary: Receive 911 CAD system webhooks
+      description: |
+        Integration endpoint for 911 Computer-Aided Dispatch (CAD) systems.
+
+        Receives cardiac arrest emergency notifications.
+      operationId: cadWebhook
+      security:
+        - APIKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CADWebhook'
+      responses:
+        '200':
+          description: Webhook received and processed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  received:
+                    type: boolean
+                  emergency_id:
+                    type: string
+
+components:
+  securitySchemes:
+    DispatcherAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token for authenticated 911 dispatchers
+
+    APIKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API key for system integrations (CAD systems)
+
+  schemas:
+    EmergencyAssessmentRequest:
+      type: object
+      required:
+        - emergency_type
+        - location
+      properties:
+        emergency_type:
+          type: string
+          enum: [cardiac_arrest, respiratory_arrest, drowning, trauma]
+        location:
+          $ref: '#/components/schemas/Location'
+        caller_info:
+          type: object
+          properties:
+            on_scene:
+              type: boolean
+            can_assist:
+              type: boolean
+            language:
+              type: string
+              example: "en"
+        additional_info:
+          type: object
+          additionalProperties: true
+
+    EmergencyAssessmentResponse:
+      type: object
+      properties:
+        recommendation:
+          type: string
+          enum: [LAUNCH, CAUTION, DO_NOT_LAUNCH]
+        confidence:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1
+        reasoning:
+          type: object
+          properties:
+            nearest_drone:
+              type: string
+            drone_eta:
+              type: string
+              description: Estimated time of arrival (MM:SS)
+            ambulance_eta:
+              type: string
+            time_advantage:
+              type: string
+              description: How much earlier drone arrives
+            weather_safe:
+              type: boolean
+            landing_zones_available:
+              type: integer
+            bystander_present:
+              type: boolean
+            risk_level:
+              type: string
+              enum: [LOW, MEDIUM, HIGH]
+        alternative_drones:
+          type: array
+          items:
+            type: object
+            properties:
+              unit:
+                type: string
+              eta:
+                type: string
+              battery:
+                type: string
+
+    DroneLaunchRequest:
+      type: object
+      required:
+        - emergency_id
+        - drone_id
+        - destination
+        - dispatcher_id
+      properties:
+        emergency_id:
+          type: string
+        drone_id:
+          type: string
+        destination:
+          $ref: '#/components/schemas/Coordinates'
+        dispatcher_id:
+          type: string
+        priority:
+          type: string
+          enum: [EMERGENCY, HIGH, NORMAL]
+          default: EMERGENCY
+
+    DroneLaunchResponse:
+      type: object
+      properties:
+        mission_id:
+          type: string
+        drone_id:
+          type: string
+        status:
+          type: string
+          enum: [LAUNCHED, ACKNOWLEDGED]
+        eta:
+          type: string
+        launch_time:
+          type: string
+          format: date-time
+        websocket_url:
+          type: string
+          format: uri
+          description: WebSocket URL for real-time updates
+
+    Mission:
+      type: object
+      properties:
+        mission_id:
+          type: string
+        emergency_id:
+          type: string
+        drone_id:
+          type: string
+        status:
+          type: string
+          enum: [LAUNCHED, IN_FLIGHT, ARRIVED, AED_DEPLOYED, RETURNING, COMPLETED, ABORTED]
+        destination:
+          $ref: '#/components/schemas/Location'
+        telemetry:
+          $ref: '#/components/schemas/Telemetry'
+        voice_ai:
+          $ref: '#/components/schemas/VoiceAIStatus'
+        timeline:
+          type: array
+          items:
+            type: object
+            properties:
+              timestamp:
+                type: string
+                format: date-time
+              event:
+                type: string
+              details:
+                type: string
+
+    Telemetry:
+      type: object
+      properties:
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        altitude:
+          type: number
+          description: Altitude in meters
+        speed:
+          type: number
+          description: Speed in m/s
+        battery:
+          type: integer
+          description: Battery percentage
+        heading:
+          type: number
+          description: Heading in degrees
+        gps_satellites:
+          type: integer
+        ai_detections:
+          type: integer
+        landing_zone_confidence:
+          type: number
+          format: float
+
+    VoiceAIStatus:
+      type: object
+      properties:
+        active:
+          type: boolean
+        language_detected:
+          type: string
+        conversation_state:
+          type: string
+          enum: [ARRIVAL, ASSESS_PATIENT, START_CPR, PREPARE_AED, AED_ACTIVE, STANDBY]
+        last_interaction:
+          type: string
+          format: date-time
+        total_exchanges:
+          type: integer
+
+    VoiceTranscriptMessage:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        speaker:
+          type: string
+          enum: [DRONE, BYSTANDER, AED_DEVICE]
+        text:
+          type: string
+        language:
+          type: string
+        confidence:
+          type: number
+          format: float
+
+    Drone:
+      type: object
+      properties:
+        drone_id:
+          type: string
+        unit_name:
+          type: string
+        status:
+          type: string
+          enum: [READY, CHARGING, IN_FLIGHT, MAINTENANCE, OFFLINE]
+        location:
+          $ref: '#/components/schemas/Coordinates'
+        battery:
+          type: integer
+        last_mission:
+          type: string
+          format: date-time
+        total_missions:
+          type: integer
+        hardware:
+          type: object
+          properties:
+            model:
+              type: string
+              example: "SkyRescue SR-1000"
+            ai_compute:
+              type: string
+              example: "NVIDIA Jetson Orin Nano 8GB"
+            voice_ai:
+              type: boolean
+            firmware_version:
+              type: string
+
+    CADWebhook:
+      type: object
+      required:
+        - event_type
+        - emergency_id
+        - location
+      properties:
+        event_type:
+          type: string
+          enum: [cardiac_arrest, respiratory_arrest]
+        emergency_id:
+          type: string
+        location:
+          $ref: '#/components/schemas/Location'
+        caller_phone:
+          type: string
+        additional_data:
+          type: object
+          additionalProperties: true
+
+    Location:
+      type: object
+      required:
+        - latitude
+        - longitude
+      properties:
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        address:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        zip:
+          type: string
+
+    Coordinates:
+      type: object
+      required:
+        - latitude
+        - longitude
+      properties:
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        details:
+          type: object
+          additionalProperties: true
+
+  responses:
+    BadRequest:
+      description: Invalid request parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "INVALID_REQUEST"
+            message: "Missing required field: emergency_type"
+
+    Unauthorized:
+      description: Authentication required or invalid credentials
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "UNAUTHORIZED"
+            message: "Invalid dispatcher authentication token"
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "NOT_FOUND"
+            message: "Mission not found"
+
+    ServiceUnavailable:
+      description: Service temporarily unavailable
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "SERVICE_UNAVAILABLE"
+            message: "AI assessment service is temporarily unavailable"
